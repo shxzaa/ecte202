@@ -1,0 +1,40 @@
+% Define circuit parameters
+R = 5;      % Resistance in ohms
+C = 2;      % Capacitance in Farads
+
+% Define transfer function coefficients
+num = 1;          % Numerator coefficient
+den = [R*C 1];      % Denominator coefficients [10 1] represents 10s + 1
+
+% Create transfer function
+sys = tf(num, den);
+
+% Generate Bode plot
+[mag, phase, w] = bode(sys);
+
+% Convert magnitude to decibels
+mag_db = 20*log10(squeeze(mag));
+
+% Convert phase to degrees (phase is already in degrees from bode)
+phase_deg = squeeze(phase);
+
+% Display results
+fprintf('Frequency (rad/s) | Magnitude (dB) | Phase (degrees)\n');
+fprintf('------------------------------------------------\n');
+for i = 1:length(w)
+    fprintf('%12.4f    | %11.4f   | %11.4f\n', w(i), mag_db(i), phase_deg(i));
+end
+
+% Plot Bode diagram
+figure;
+subplot(2,1,1);
+semilogx(w, mag_db);
+grid on;
+title('Bode Diagram');
+ylabel('Magnitude (dB)');
+
+subplot(2,1,2);
+semilogx(w, phase_deg);
+grid on;
+xlabel('Frequency (rad/s)');
+ylabel('Phase (deg)');
