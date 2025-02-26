@@ -1,0 +1,42 @@
+% Circuit parameters
+R1 = 2;      % Ohms
+R2 = 4;      % Ohms
+L = 1;       % Henry
+C = 0.1;     % Farad
+
+% Transfer function coefficients
+num = 1;                  % Numerator coefficient
+den = [L*C (R1+R2)*C 1];   % Denominator coefficients (0.1s² + 0.6s + 1)
+
+% Create transfer function
+sys = tf(num, den);
+
+% Generate and plot Bode diagram
+figure;
+bode(sys);
+grid on;
+title('Bode Plot - Second Order RLC Circuit');
+
+% Get frequency response data
+[mag, phase, w] = bode(sys);
+mag_db = 20*log10(squeeze(mag));
+phase_deg = squeeze(phase);
+
+% Find -3dB point
+[~, idx] = min(abs(mag_db + 3));
+w_3db = w(idx);
+mag_3db = mag_db(idx);
+
+% Calculate natural frequency
+wn = 1/sqrt(L*C);  % Natural frequency
+fprintf('Natural frequency (rad/s): %.3f\n', wn);
+fprintf('-3dB frequency (rad/s): %.3f\n', w_3db);
+fprintf('Magnitude at -3dB point (dB): %.3f\n', mag_3db);
+
+% Display frequency response data
+fprintf('\nFrequency Response Data:\n');
+fprintf('Frequency (rad/s) | Magnitude (dB) | Phase (degrees)\n');
+fprintf('------------------------------------------------\n');
+for i = 1:length(w)
+    fprintf('%12.4f    | %11.4f   | %11.4f\n', w(i), mag_db(i), phase_deg(i));
+end
