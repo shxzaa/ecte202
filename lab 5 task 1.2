@@ -1,0 +1,28 @@
+% Define circuit parameters
+R = 3;      % Resistance in ohms
+L = 2;      % Inductance in Henries
+
+% Define transfer function coefficients
+num = [L 0];        % Numerator coefficients [2 0] represents 2s
+den = [L R];        % Denominator coefficients [2 3] represents 2s + 3
+
+% Create transfer function
+sys = tf(num, den);
+
+% Generate Bode plot
+figure;
+bode(sys);
+grid on;
+title('Bode Plot - RL Circuit');
+
+% Get specific frequency response data
+[mag, phase, w] = bode(sys);
+mag_db = 20*log10(squeeze(mag));
+
+% Find -3dB point
+[~, idx] = min(abs(mag_db + 3));  % Find closest point to -3dB
+w_3db = w(idx);
+mag_3db = mag_db(idx);
+
+fprintf('Corner frequency (rad/s): %.3f\n', w_3db);
+fprintf('Magnitude at corner frequency (dB): %.3f\n', mag_3db);
